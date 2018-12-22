@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>2018.12.22</title>
+    <style>
+        .active{
+            background:brown;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <div>
+            <input type="text" v-model.number="name">
+            <span v-show="name">
+                你的名字是<pre>{{name}}</pre>
+            </span><br>
+        </div>
+        <div>
+            <input type="text" v-model="age">
+            <span v-show="age">
+                你的年龄是{{age}}
+            </span><br>
+        </div>
+        <div>
+            <input type="text" v-model="sex" readonly="readonly">
+            <span v-show="sex">
+                你的性别是{{sex}}
+            </span><br>
+        </div>
+        <div>
+            <ul>
+                <li v-for="food in foodList">{{food.name}} ￥{{food.discount ? food.price * food.discount : food.price}}</li>
+            </ul>
+        </div>
+        <div>
+            <a v-bind:class="{active : isActive}" v-bind:href="url">
+                点我
+            </a>
+        </div>
+        <div>
+            <button @click="onClick">
+                点我
+            </button><br><br>
+            <button v-on="{mouseenter:onEnter , mouseleave:onLeave}">点我点我</button><br>
+            <form @keyup.enter="isEnter()" @submit.prevent="onSubmit()">
+                <input type="text">
+                <button type="submit">提交</button>
+            </form>
+        </div>
+        <div>
+            <lable>
+                男
+                <input type="radio" value="male" v-model="sex">
+            </lable>
+            <lable>
+                女
+                <input type="radio" value="female" v-model="sex">
+            </lable><br>
+            <h1>爱好</h1>
+            <label>
+                篮球
+                <input type="checkbox" value="篮球" v-model="hobby">
+            </label>
+            <label>
+                台球
+                <input type="checkbox" value="台球" v-model="hobby">
+            </label>
+            {{hobby}}<br><br>
+        </div>
+        <div>
+            <textarea v-model="article"></textarea><br><br>
+        </div>
+        <div>
+            你来自哪里？
+            <select  v-model="from">
+                <option value="1">山西</option>
+                <option value="2">上海</option>
+                <option value="3">北京</option>
+            </select>
+            {{from}}<br><br><br>
+        </div>
+        <div>
+            你要去哪里？
+            <select v-model="dest" multiple>
+                <option value="1">山西</option>
+                <option value="2">上海</option>
+                <option value="3">北京</option>
+                <option value="4">广州</option>
+            </select>
+            {{dest}}<br><br>
+        </div>
+
+
+    </div>
+
+
+    <script src="../lib/vue.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
