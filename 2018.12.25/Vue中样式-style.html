@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>2018.12.25</title>
+</head>
+<body>
+    <div id="app">
+        <h1 style="color: chartreuse">这是一个邪恶的H1</h1>
+        <!--  对象就是无序键值对的集合  -->
+        <h1 :style="styleObj1">这是一个邪恶的H1</h1>
+        <!--  可以使用数组来引用多个 style  -->
+        <h1 :style="[styleObj1 , styleObj2]">这是一个邪恶的H1</h1>
+    </div>
+<script src="../lib/vue.js"></script>
+<script>
+    var app = new Vue({
+        el : '#app',
+        data : {
+            styleObj1 : {color : 'chartreuse' },
+            styleObj2 : {'font-style' : 'italic'},  // 对象的属性如果有连字符（ - ），属性值必须用引号引起来
+        }
+    })
+</script>
+</body>
+</html>

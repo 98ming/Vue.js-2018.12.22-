@@ -14,8 +14,6 @@ var app = new Vue({
           return Math.round(this.sum / 3);
       },
     },
-
-
 })
 
 /*Vue.component('alert_com',{
@@ -26,10 +24,10 @@ var app = new Vue({
         }
     }
 })*/
-new Vue({
+var com1 = new Vue({
     el: '#com1',
     components:{
-        'alert-box':{
+        'alertbox':{
             template :
                 `<button @click="on_click">
                     弹弹弹
@@ -43,9 +41,11 @@ new Vue({
     }
 })
 Vue.component('alert_like',{
-    template: `<button :class="{liked : !liked}" @click="toggle_like()"> 
-                    👿 点赞{{like_count}}
-                </button>`,
+    template: `<div>
+                    <button :class="{liked : !liked}" @click="toggle_like()">
+                        👿 点赞{{like_count}}
+                    </button>
+            </div>`,
     data: function () {
         return {
             like_count: 10,
@@ -62,7 +62,7 @@ Vue.component('alert_like',{
         }
     }
 })
-new Vue({
+var com2 = new Vue({
     el: '#com2',
     /*data:{
         like_count:10,
@@ -88,4 +88,5 @@ new Vue({
         }
     }*/
 })
+
 
