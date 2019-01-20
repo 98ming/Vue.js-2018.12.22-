@@ -20,12 +20,13 @@
                     Id: <input type="text" class="form-control" v-model="id">
                 </lable>
                 <lable>
-                    Name: <input type="text" class="form-control" v-model="name">
+                    Name: <input type="text" class="form-control" v-model="name" @keyup.enter="add">
                 </lable>
                 <input type="button"  class="btn btn-primary" value="添加" @click="add">
                 <lable>
                     搜索名称关键字：
-                    <input type="text" class="form-control" v-model="keywords">
+                    <!--  注意：在 Vue 中所有的指令，在调用的时候，都以 v- 开头  -->
+                    <input type="text" class="form-control" v-model="keywords" v-focus v-color="'pink'">
                 </lable>
             </div>
         </div>
@@ -53,30 +54,73 @@
             </tbody>
         </table>
     </div>
-
+    <div id="app2">
+        <h3 v-color="'blue'" v-fontweight="1000" v-fontsize="50">{{dt | timeFormat}}</h3>
+    </div>
 <script src="../lib/vue.js"></script>
 <script>
     // 全局过滤器，进行时间的格式化
+    // 所谓的全局过滤器，就是所有的VM实例都共享的
     Vue.filter('timeFormat',function (date,pattern="") {
         // 根据给定的时间字符串 ，得到特定的时间
         var dt = new Date(date)
         var y = dt.getFullYear()
-        var m = dt.getMonth() + 1
-        var d = dt.getDate()
+        var m = (dt.getMonth() + 1).toString().padStart(2,'0')
+        var d = dt.getDate().toString().padStart(2,'0')
         // return y + '-' + m + '-' + d
 
         if(pattern.toLowerCase() == 'yyyy-mm-dd'){
             return `${y}-${m}-${d}`
         }
         else{
-            var hh = date.getHours()
-            var mm = date.getMinutes()
-            var ss = date.getSeconds()
+            var hh = date.getHours().toString().padStart(2,'0')
+            var mm = date.getMinutes().toString().padStart(2,'0')
+            var ss = date.getSeconds().toString().padStart(2,'0')
             return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
         }
     })
+    // 自定义全局按键修饰符
+    Vue.config.keyCodes.f2 = 113
 
+    // 使用 Vue.directive() 定义全局的指令 v-focus
+    // 其中：参数1：指令的名称，注意，在定义的时候，指令的名称前面，不需要加 v- 前缀，
+    // 但是：在调用的时候，必须加v-前缀来进行调用
+    // 参数2：是一个对象，这个对象身上，有一些指令相关的函数，这些函数可以在特定的阶段，执行相关的操作
+    Vue.directive('focus',{
+        bind:function (el) {  // 每当指令绑定到元素上的时候，会立即执行这个 bind 函数，只执行一次
+            // 注意：在每个函数中，第一个参数，永远是 el ，表示被绑定了指令的那个元素，这个 el 参数，是一个原生的JS对象
+            // 在元素刚绑定了指令的时候，还没有插入到 DOM 中去，这时候调用 focus 方法没有作用
+            // 因为，一个元素，只有插入DOM之后，才能获取焦点
+            // el.focus()
+        },
+        inserted:function (el) {  // inserted 表示元素插入到 DOM中的时候，会执行 inserted 函数【触发一次】
+            el.focus()
+            // 和JS行为有关的操作，最好在 inserted 中去执行，防止 JS行为不生效
+        },
+        updated:function () {  // 当VNode更新的时候，会执行 updated ，可能会触发多次
 
+        },
+    })
+
+    // 自定义一个 设置字体颜色的指令
+    Vue.directive('color',{
+        bind:function (el,binding) {
+            // 样式，只要通过指令绑定给了元素，不管这个元素有没有插入到页面中去，这个元素肯定有了一个内联样式
+            // 将来元素肯定会显示到页面中，这时候，浏览器的渲染引擎必然会解析样式，应用给这个元素
+            // el.style.color = 'red'
+            // 和样式相关的操作，一般都可以在 bind 中执行
+            console.log(binding.name)
+            console.log(binding.value)
+            console.log(binding.expression)
+            el.style.color = binding.value
+        },
+        inserted:function (el) {
+            
+        },
+        updated:function (el) {
+            
+        }
+    })
 
     var  vm = new Vue({
         el : "#app",
@@ -146,6 +190,46 @@
         },
         // 过滤器定义语法
         // Vue.filter('过滤器名称' ， fuction（）｛｝)
+    })
+
+    //如何定义一个私有的过滤器（局部）
+    var vm2 = new Vue({
+        el : '#app2',
+        data : {
+            dt : new Date(),
+
+        },
+        methods:{
+
+        },
+        filters:{  // 定义私有过滤器  过滤器有两个条件   【过滤器名称 和 处理函数】
+            // 过滤器调用的时候，采用的是就近原则，如果私有过滤器和全局过滤器名称一致了，这时候优先调用私有过滤器
+            timeFormat : function (date,pattern='') {
+                var dt = new Date(date)
+                var y = dt.getFullYear()
+                var m = (dt.getMonth() + 1).toString().padStart(2,'0')
+                var d = dt.getDate().toString().padStart(2,'0')
+                if(pattern.toLowerCase() == 'yyyy-mm-dd'){
+                    return `${y}-${m}-${d}`
+                }
+                else{
+                    var hh = date.getHours().toString().padStart(2,'0')
+                    var mm = date.getMinutes().toString().padStart(2,'0')
+                    var ss = date.getSeconds().toString().padStart(2,'0')
+                    return `${y}-${m}-${d} ${hh}:${mm}:${ss}~~~~~~`
+                }
+            }
+        },
+        directives:{   // 自定义私有指令
+            'fontweight':{  // 设置字体粗细
+                bind:function (el,binding) {
+                    el.style.fontWeight = binding.value
+                }
+            },
+            'fontsize':function (el,binding) {  // 注意：这个function等同于把代码写到了 bind 和 updated 中去
+                el.style.fontSize = parseInt(binding.value) + 'px'
+            }
+        }
     })
 
 
