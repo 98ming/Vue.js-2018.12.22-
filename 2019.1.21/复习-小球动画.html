@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #ball{
+            width: 15px;
+            height: 15px;
+            background-color: red;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <input type="button" value="快到碗里来" @click="flag = !flag">
+        <transition @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
+            <div id="ball" v-show="flag"></div>
+        </transition>
+    </div>
+
+<script src="../lib/vue.js"></script>
+<script>
+    var vm = new Vue({
+        el : '#app',
+        data : {
+            flag : false
+        },
+        methods : {
+            beforeEnter(el){
+                el.style.transform = 'translate(0,0)'
+            },
+            enter(el,done){
+                el.offsetWidth
+                el.style.transform = 'translate(150px,450px)'
+                el.style.transition = 'all 1s ease'
+                done()
+            },
+            afterEnter(el){
+                // 这句话，第一个功能，是控制小球的显示与隐藏
+                // 第二个功能，直接跳过后半场动画，让 flag 标识符直接变为 false
+                this.flag = false
+                // Vue 把一个完整的动画，使用钩子函数，拆分成了两部分
+                // 我们使用 flag 标识符，来表示动画的切换
+                // 刚一开始，flag = false -> true -> false
+            }
+        }
+    })
+</script>
+</body>
+</html>
